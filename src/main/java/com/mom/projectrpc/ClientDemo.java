@@ -1,5 +1,9 @@
 package com.mom.projectrpc;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
 import org.apache.thrift.TException;
 import org.apache.thrift.protocol.TBinaryProtocol;
 import org.apache.thrift.protocol.TCompactProtocol;
@@ -22,14 +26,20 @@ public class ClientDemo {
      */
     public static void main(String[] args) {
         ClientDemo client = new ClientDemo();
-        client.startClient("amosli");
+        try {
+			client.startClient("amosli");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
  
     }
  
     /**
      * @param userName
+     * @throws IOException 
      */
-    public void startClient(String userName) {
+    public void startClient(String userName) throws IOException {
         TTransport transport = null;
         try {
             transport = new TSocket(SERVER_IP, SERVER_PORT, TIMEOUT);
@@ -41,6 +51,38 @@ public class ClientDemo {
                     protocol);
             transport.open();
             String result = client.executeAndReply(userName);
+    		boolean flag = true;
+    		BufferedReader mBrsend = new BufferedReader(new InputStreamReader(System.in));
+    		while(flag){
+    			System.out.println("Please input your command:"
+    					+ "\n 1. put key value"
+    					+ "\n 2. get key"
+    					+ "\n 3. delete key"
+    					+ "\n 4. disconnect");
+    			String str = mBrsend.readLine();
+    			if(str.equals("disconnect") || str==null ||str.equals("")){
+    				flag = false;
+    				System.out.println("Disconnect.");
+    				}
+    			else{
+    				String[] parts = str.split(" ");
+    				System.out.println(parts[0]);
+    				switch(parts[0]){
+    				case "put":
+    					System.out.println("put =: " + result);
+    					break;
+    				case "get":
+    					System.out.println("get =: " + result);
+    					break;
+    				case "delete":
+    					System.out.println("delete =: " + result);
+    					break;
+    				default:
+    					System.out.println("Insufficient command. Please follow the format.");
+    					
+    				}
+    			}
+    				}
             System.out.println("Thrift client result =: " + result);
         } catch (TTransportException e) {
             e.printStackTrace();
