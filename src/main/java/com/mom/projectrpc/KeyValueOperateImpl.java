@@ -9,7 +9,7 @@ public class KeyValueOperateImpl implements KeyValueOperateService.Iface {
  
     public String executeAndReply(String order) throws org.apache.thrift.TException{
     	/*deal with the command*/
-        return "Hi!";
+        return order;
     }
  
 }
