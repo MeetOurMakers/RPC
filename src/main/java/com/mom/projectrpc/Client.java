@@ -37,12 +37,14 @@ public class Client {
 	}
 
 	public static void main(String[] args) throws IOException {
-
-		Client client = new Client(args[0]);// new client instance with running
-											// Argument: the IP address
-		client.startClient();
+		try{
+			Client client = new Client(args[0]);// new client instance with running
+												// Argument: the IP address
+			client.startClient();
+			} catch (ArrayIndexOutOfBoundsException e) {
+				System.out.println("Error: Argument for IP address is missing! \nFormat: java -jar RPC-client.jar 127.0.1.1");
+			}
 	}
-
 	/**
 	 * @param order
 	 * @throws IOException
