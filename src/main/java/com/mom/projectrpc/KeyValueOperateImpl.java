@@ -169,7 +169,10 @@ class SupTools {
 		default:
 			orderAndReply[0] = "no";
 			orderAndReply[1] = "cannot read your command!";
+			return orderAndReply;
 		}
+		orderAndReply[0] = order;
+		orderAndReply[1] = "readable order";
 		return orderAndReply;
 	}
 
