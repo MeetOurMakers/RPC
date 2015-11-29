@@ -80,6 +80,9 @@ public class Client {
 			if (null != transport) {
 				transport.close();
 			}
+			if (mBrsend != null) {
+				mBrsend.close();
+			}
 		}
 	}
 }
