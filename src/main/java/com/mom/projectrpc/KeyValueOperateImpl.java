@@ -23,11 +23,11 @@ public class KeyValueOperateImpl implements KeyValueOperateService.Iface {
 	public static final int TIMEOUT = 30000;// threshold = 30s
 	public int commitnum = 0;
 	public String currentip;
-	public String[] ipaddress = {"172.22.71.27", "172.22.71.28", "172.22.71.28", "172.22.71.28", "172.22.71.28"};
+	public String[] ipaddress = { "172.22.71.27", "172.22.71.28", "172.22.71.28", "172.22.71.28", "172.22.71.28" };
 
-	public KeyValueOperateImpl() {
+	public KeyValueOperateImpl(String serverip) {
 		hashmap = new HashMap<String, String>();
-		
+		currentip = serverip;
 	}
 
 	@Override
@@ -38,7 +38,10 @@ public class KeyValueOperateImpl implements KeyValueOperateService.Iface {
 			return orderAndReply[1];
 		}
 		commitnum = 0;
-		for(int i=0;i<5;i++){
+		for (int i = 0; i < 5; i++) {
+			System.out.println("i = "+i);
+			if (currentip.equals(ipaddress[i]))
+				continue;
 			// blocking I/O transport
 			transport = new TSocket(ipaddress[i], SERVER_PORT, TIMEOUT);
 			// protocol should be the same with the server
@@ -52,11 +55,13 @@ public class KeyValueOperateImpl implements KeyValueOperateService.Iface {
 			}
 		}
 		System.out.println("cancommit num =" + commitnum);
-		if(commitnum < 4){
+		if (commitnum < 4) {
 			return "cannot commit";
 		}
 		commitnum = 0;
-		for(int i=0;i<5;i++){
+		for (int i = 0; i < 5; i++) {
+			if (currentip.equals(ipaddress[i]))
+				continue;
 			// blocking I/O transport
 			transport = new TSocket(ipaddress[i], SERVER_PORT, TIMEOUT);
 			// protocol should be the same with the server
@@ -70,12 +75,13 @@ public class KeyValueOperateImpl implements KeyValueOperateService.Iface {
 			}
 		}
 		System.out.println("docommit num =" + commitnum);
-		if(commitnum < 4){
+		if (commitnum < 4) {
 			return "cannot do commit";
 		}
 		String[] reply = SupTools.executeOrder(orderAndReply[0], hashmap, true);
 		return reply[1];
 	}
+
 	@Override
 	public boolean canCommit() throws TException {
 		// TODO Auto-generated method stub
